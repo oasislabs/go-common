@@ -1,0 +1,34 @@
+version: 2.1
+
+jobs:
+  test:
+    docker:
+      # specify the version you desire here
+      - image: circleci/golang:1.12.0-stretch
+
+    steps:
+      - checkout
+      - run: curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s v1.15.0
+      - run: sudo cp ./bin/golangci-lint $GOPATH/bin/
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - go-mod-v1-{{ checksum "go.sum" }}
+
+      - run: go get ./...
+      - run: golangci-lint run
+      - run: go vet ./...
+      - run: go test -v -race ./...
+
+      - save_cache:
+          paths:
+            - "/go/pkg/mod"
+          key: go-mod-v1-{{ checksum "go.sum" }}
+
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - test
