@@ -1,4 +1,4 @@
-module github.com/oasislabs/siv
+module github.com/oasislabs/go-common
 
 require (
 	git.schwanenlied.me/yawning/bsaes.git v0.0.0-20190222205624-e466e3c35f68 // indirect
